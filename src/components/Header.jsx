@@ -3,7 +3,7 @@ import { FaApple, FaUserCircle } from "react-icons/fa";
 
 export default function Header() {
 	return (
-		<header>
+		<header className="w-screen items-center">
 			<button>
 				{/* Nufogy icon */}
 				<FaApple />

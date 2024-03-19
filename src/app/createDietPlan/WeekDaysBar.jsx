@@ -1,9 +1,13 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import WeekDayItem from "./WeekDayItem";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 export default function WeekDaysBar() {
+	const [selectedWeekDay, setSelectedWeekDay] = useState(new Date().getDay());
+
 	const getWeekStart = () => {
 		const currDate = new Date();
 
@@ -21,22 +25,36 @@ export default function WeekDaysBar() {
 		for (let i = 0; i < 7; i++) {
 			const dayOfMonth = startDayOfMonth + i;
 			currDate.setDate(dayOfMonth);
+			const weekDayID = currDate.getDay();
 
-			const narrowWeekDay = format(currDate, "eeeee", {
-				locale: es,
-			});
+			const narrowWeekDay = (
+				weekDayID === 3
+					? "X"
+					: format(currDate, "eeeee", {
+							locale: es,
+					  })
+			).toUpperCase();
 
-			weekDays.push([narrowWeekDay, dayOfMonth]);
+			weekDays.push({ narrowWeekDay, dayOfMonth, weekDayID });
 		}
 
 		return weekDays;
 	};
 
 	return (
-		<div>
-			{getWeekDays(getWeekStart()).map((weekDayTuple) => (
-				<WeekDayItem key={weekDayTuple[0]} weekDayTuple={weekDayTuple} />
-			))}
+		<div className="bg-primary gap-2">
+			{getWeekDays(getWeekStart()).map((weekDay) => {
+				const { weekDayID } = weekDay;
+
+				return (
+					<WeekDayItem
+						key={weekDayID}
+						weekDay={weekDay}
+						status={weekDayID === selectedWeekDay ? "selected" : "not-selected"}
+						setSelectedWeekDay={setSelectedWeekDay}
+					/>
+				);
+			})}
 		</div>
 	);
 }
